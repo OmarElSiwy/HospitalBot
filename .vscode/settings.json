@@ -1,0 +1,11 @@
+{
+    "cortex-debug.gdbPath": "/usr/local/bin/arm-none-eabi-gdb",
+    "cortex-debug.stutilPath": "/usr/local/bin/st-util",
+    "files.associations": {
+        "cstdint": "c",
+        "compare": "c",
+        "stdint.h": "c",
+        "main.h": "c",
+        "random": "c"
+    },
+}
