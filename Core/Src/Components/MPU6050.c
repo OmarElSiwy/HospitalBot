@@ -63,7 +63,7 @@ void ReadTemp(MPUData *MPU6050Information) {
 }
 
 void ReadAll(MPUData *MPU6050Information) {
-    ReadGyro(&MPU6050Information);
-    ReadAccel(&MPU6050Information);
-    ReadTemp(&MPU6050Information);
+    ReadGyro(MPU6050Information);
+    ReadAccel(MPU6050Information);
+    ReadTemp(MPU6050Information);
 }

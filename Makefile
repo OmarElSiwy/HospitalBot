@@ -22,7 +22,7 @@ TARGET = LineTracking
 # debug build?
 DEBUG = 1
 # optimization
-OPT = -Og # -O0 for debugging, -O3 for optimization
+OPT = -O3 # -O0 for debugging, -O3 for optimization
 
 
 #######################################
@@ -34,16 +34,24 @@ BUILD_DIR = build
 ######################################
 # source
 ######################################
+
+# If Production or Testing
+ifeq ($(ENV), production)
+C_SOURCES = Core/Src/main.c
+else
+C_SOURCES = Tests/Tests.c
+endif
+
 # C sources
-C_SOURCES =  \
-Core/Src/main.c \
-Core/Src/gpio.c \
-Core/Src/freertos.c \
-Core/Src/i2c.c \
-Core/Src/usart.c \
+C_SOURCES +=  \
+Core/Src/CommunicationProtocol/gpio.c \
+Core/Src/CommunicationProtocol/i2c.c \
+Core/Src/CommunicationProtocol/usart.c \
+Core/Src/CommunicationProtocol/Tim.c \
 Core/Src/Components/MPU6050.c \
 Core/Src/stm32f4xx_it.c \
 Core/Src/stm32f4xx_hal_msp.c \
+Core/Src/stm32f4xx_hal_timebase_tim.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c \
@@ -73,6 +81,7 @@ Middlewares/Third_Party/FreeRTOS/Source/timers.c \
 Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c \
 Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c \
 Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
+
 
 # ASM sources
 ASM_SOURCES =  \
@@ -217,8 +226,17 @@ clean:
 
 # *** EOF ***
 
+# Default value for ENV
+ENV := production
+
 connectflash: ${BUILD_DIR}/${TARGET}.bin
 	st-flash --connect-under-reset --reset write $< 0x8000000
 
 cleanflash: ${BUILD_DIR}/${TARGET}.bin
+	st-flash --reset write $< 0x8000000
+
+.PHONY: tests
+
+tests: override ENV := tests
+tests: ${BUILD_DIR}/${TARGET}.bin
 	st-flash --reset write $< 0x8000000

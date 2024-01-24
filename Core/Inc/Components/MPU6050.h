@@ -104,3 +104,4 @@ void ReadGyro(MPUData *MPU6050Information);
 void ReadAccel(MPUData *MPU6050Information);
 void ReadTemp(MPUData *MPU6050Information);
 void ReadAll(MPUData *MPU6050Information);
+void FilterData(MPUData *MPU6050Information);
