@@ -20,27 +20,12 @@
 #include "cmsis_os.h"
 
 // Communication Protocols
-
+#include "CommunicationProtocols/gpio.h"
 
 // Components
 #include "Components/MPU6050.h"
 
 // Subsystems
-
-// Printing
-#include <stdio.h>
-
-#ifdef __GNUC__
-#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-#else
-#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-#endif
-
-PUTCHAR_PROTOTYPE
-{
-  HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
-  return ch;
-}
 
 // Declare Functions
 void SystemClock_Config(void);
@@ -49,12 +34,12 @@ void SystemClock_Config(void);
 int main(void) {
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
-
   /* Configure the system clock */
   SystemClock_Config();
-
+  /* Setup the Pins/Ports to be Analog to be Power Efficient */
+  InitializePins();
   /* Initialize all configured Subsystems --> With Their Configured Timers/Pinouts*/
-  
+  osKernelInitialize(); 
   /* Call init function for freertos objects (in freertos.c) */
   
   /* Start scheduler */
@@ -132,13 +117,7 @@ void SystemClock_Config(void)
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  /* USER CODE BEGIN Callback 0 */
-
-  /* USER CODE END Callback 0 */
   if (htim->Instance == TIM9) {
     HAL_IncTick();
   }
-  /* USER CODE BEGIN Callback 1 */
-
-  /* USER CODE END Callback 1 */
 }

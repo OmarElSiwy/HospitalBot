@@ -23,12 +23,13 @@
 extern "C" {
 #endif
 
-#include "stm32f4xx_hal.h"
 #include "main.h"
 #include <stdbool.h>
 
 void InitializePins(void);
-void MX_GPIO_Init(GPIO_InitTypeDef* description, GPIO_TypeDef* group);
+void MX_GPIO_Analog_Init(uint32_t Pin, GPIO_TypeDef *group);
+void MX_GPIO_Input_Init(uint32_t Pin, GPIO_TypeDef *group);
+void MX_GPIO_Output_Init(uint32_t Pin, GPIO_TypeDef *group);
 
 #ifdef __cplusplus
 }

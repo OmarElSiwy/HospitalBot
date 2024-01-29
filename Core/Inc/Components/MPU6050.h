@@ -2,6 +2,9 @@
 
 #include "main.h"
 #include <stdint.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include "CommunicationProtocols/i2c.h"
 
 //#define SELF_TEST_X 0x0D
 //#define SELF_TEST_Y 0x0E
@@ -86,22 +89,42 @@
 //#define FIFO_R_W 0x74
 #define WHO_AM_I 0x75
 
-#define SAMPLE_RATE 1 << 7// You have the range of 1 << 0 for least rate to 1 << 7 for maximum rate
-typedef struct {
-    float GyroLSBSensitivity; // LSB/(degrees/s)
-    float AccelLSBSensitivity; // LSB/G 
+#define SAMPLE_RATE 0x07 // You have the range of 1 << 0 for least rate to 1 << 7 for maximum rate
 
-    double GyroX, GyroY, GyroZ;
-    double AccelX, AccelY, AccelZ;
-    double Temperature;
+// Decides Sensitivty of Gyro and Accelerometer
+#if (ACCEL_CONFIG >> 3) == 0
+  #define AccelLSBSensitivity 16384
+#elif (ACCEL_CONFIG >> 3) == 1
+  #define AccelLSBSensitivity 8192
+#elif (ACCEL_CONFIG >> 3) == 2
+  #define AccelLSBSensitivity 4096
+#elif (ACCEL_CONFIG >> 3) == 3
+  #define AccelLSBSensitivity 2048
+#endif
 
-    uint8_t MPU_ADDRESS;
-    I2C_HandleTypeDef *I2C;
-} MPUData;
+#if (GYRO_CONFIG >> 3) == 0
+  #define GyroLSBSensitivity 131
+#elif (GYRO_CONFIG >> 3) == 1
+  #define GyroLSBSensitivity 65.5
+#elif (GYRO_CONFIG >> 3) == 2
+  #define GyroLSBSensitivity 32.8
+#elif (GYRO_CONFIG >> 3) == 3
+  #define GyroLSBSensitivity 16.4
+#endif
 
-MPUData* Initialize(I2C_HandleTypeDef *I2Cx, uint8_t IsFirst, uint8_t LowerPowerMode);
-void ReadGyro(MPUData *MPU6050Information);
-void ReadAccel(MPUData *MPU6050Information);
-void ReadTemp(MPUData *MPU6050Information);
-void ReadAll(MPUData *MPU6050Information);
-void FilterData(MPUData *MPU6050Information);
+typedef struct tuple {
+  double x, y, z;
+} tuple;
+
+typedef struct MPU_60X0 {
+  tuple (*FilterGyro)(void);
+  tuple (*FilterAccel)(void);
+  double (*FilterThermo)(void);
+
+  uint8_t ADDRESS;
+  I2C_HandleTypeDef *I2C;
+} MPU_60X0;
+
+void Initialize(bool LowerPowerMode);
+
+extern MPU_60X0 MPUs;

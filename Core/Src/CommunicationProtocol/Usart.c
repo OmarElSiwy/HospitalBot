@@ -18,7 +18,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include "CommunicationProtocols/Usart.h"
+#include "CommunicationProtocols/usart.h"
 
 UART_HandleTypeDef huart2;
 #define USART_TX_Pin GPIO_PIN_2

@@ -23,10 +23,10 @@
 extern "C" {
 #endif
 
-#include "stm32f4xx_hal.h"
 #include "main.h"
 
 extern UART_HandleTypeDef huart2;
+
 void MX_USART2_UART_Init(void);
 
 #ifdef __cplusplus
